@@ -287,7 +287,10 @@
   scrollbar-width: none;  /* Firefox */
 }
 
-/* Fixed body when modal is open */
+/* Lock background scroll when a modal is open.
+   The scroll container is <html> (it has overflow-y: scroll),
+   so we must lock it too, not just <body>. */
+html.modal-open,
 body.modal-open {
   overflow: hidden;
 }

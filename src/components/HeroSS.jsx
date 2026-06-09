@@ -142,39 +142,37 @@ export function Hero() {
           <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           <span className="relative z-10">My Projects</span>
         </motion.a>
-
-        
-        
-        {/* Scroll Down Indicator */}
-        <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          animate={floatAnimation}
-        >
-          <div className="flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity">
-            <span className="text-xs mb-1">Scroll Down</span>
-            <motion.div 
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path 
-                  d="M12 17L12 7M12 17L8 13M12 17L16 13" 
-                  stroke="white" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </motion.div>
-          </div>
-        </motion.div>
       </div>
+
+      {/* Scroll Down Indicator - anchored to the bottom of the hero section */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[2] pointer-events-none"
+        animate={floatAnimation}
+      >
+        <div className="flex flex-col items-center opacity-80 hover:opacity-100 transition-opacity">
+          <span className="text-xs mb-1">Scroll Down</span>
+          <motion.div 
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                d="M12 17L12 7M12 17L8 13M12 17L16 13" 
+                stroke="white" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
   );
 }

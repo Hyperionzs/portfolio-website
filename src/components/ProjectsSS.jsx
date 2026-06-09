@@ -143,13 +143,23 @@ export function Projects({ addedProjects = [] }) {
   const openModal = (project) => {
     setSelectedProject(project);
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
   };
   
   // Close modal
   const closeModal = () => {
     document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
     setSelectedProject(null);
   };
+
+  // Ensure scroll lock is cleared if the component unmounts while modal is open
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
+    };
+  }, []);
 
   return (
     <section
