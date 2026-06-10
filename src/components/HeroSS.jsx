@@ -4,9 +4,12 @@ import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import NET from 'vanta/dist/vanta.net.min';
 import project4 from '../assets/projects/project4.jpeg';
+import { useProfilePhoto } from '../hooks/useProfilePhoto';
 
 export function Hero() {
   const vantaRef = useRef(null);
+  const { profilePhoto } = useProfilePhoto();
+  const heroImage = profilePhoto || project4;
 
   useEffect(() => {
     const effect = NET({
@@ -81,7 +84,7 @@ export function Hero() {
 
       <div className="container mx-auto px-4 py-20 relative z-[2] flex flex-col items-center">
         <motion.img
-          src={project4}
+          src={heroImage}
           alt="Foto Profil"
           className="w-36 h-36 md:w-44 md:h-44 rounded-full border-4 border-purple-500 shadow-lg mb-6 object-cover"
           initial={{ opacity: 0, scale: 0.8 }}

@@ -3,6 +3,7 @@ const TAB_CONFIG = [
   { key: 'add', gradient: 'from-blue-600 to-green-600', shadow: 'shadow-blue-500/30', isAddTab: true },
   { key: 'history', gradient: 'from-indigo-600 to-purple-600', shadow: 'shadow-indigo-500/30', label: { sm: 'History', xs: 'History' }, icon: 'M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z' },
   { key: 'stats', gradient: 'from-orange-500 to-red-500', shadow: 'shadow-orange-500/30', label: { sm: 'Analytics', xs: 'Stats' }, icon: 'M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z' },
+  { key: 'profile', gradient: 'from-pink-500 to-rose-500', shadow: 'shadow-pink-500/30', label: { sm: 'Profile', xs: 'Photo' }, icon: 'M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' },
 ];
 
 export function TabNavigation({ activeTab, setActiveTab, isEditing }) {

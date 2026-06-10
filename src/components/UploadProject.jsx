@@ -10,6 +10,7 @@ import { useProjectsFirestore } from '../hooks/useProjectsFirestore';
 import { useProjectActions } from '../hooks/useProjectActions';
 import { useBulkActions } from '../hooks/useBulkActions';
 import { useProjectFilters } from '../hooks/useProjectFilters';
+import { useProfilePhoto } from '../hooks/useProfilePhoto';
 
 // ─── Utility Functions ────────────────────────────────────────
 import { exportProjectsJSON, parseImportFile } from '../utils/projectHelpers';
@@ -23,6 +24,7 @@ import { ProjectHistoryTab } from './upload/ProjectHistoryTab';
 import { ProjectAnalyticsTab } from './upload/ProjectAnalyticsTab';
 import { DeleteConfirmModal, ProjectPreviewModal, BulkActionBar, ImportModal, AIModal } from './upload/Modals';
 import { SearchFilterBar, ActionBar, ProjectCountDivider, EmptyState } from './upload/SearchFilterBar';
+import { ProfileTab } from './upload/ProfileTab';
 
 const INITIAL_PROJECT = { title: '', desc: '', github: '', demo: '', tags: '', featured: false };
 
@@ -54,6 +56,7 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
   const actions = useProjectActions({
     projects, setProjects, setProjectHistory, showNotification, onAddProject, resetForm, setActiveTab,
   });
+  const { profilePhoto, saveProfilePhoto } = useProfilePhoto();
 
   // ─── Cleanup ──────────────────────────────────────────────
   useEffect(() => imageUpload.cleanup, [imageUpload.cleanup]);
@@ -246,6 +249,15 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
           onChange={handleChange} onImageUpload={imageUpload.handleImageUpload} onDragOver={imageUpload.handleDragOver}
           onDragLeave={imageUpload.handleDragLeave} onDrop={imageUpload.handleDrop} onClearImage={imageUpload.clearImage}
           onSubmit={handleSubmit} onReset={resetForm} onShowAIModal={() => setShowAIModal(true)}
+        />
+      )}
+
+      {/* ── Profile Tab ── */}
+      {activeTab === 'profile' && (
+        <ProfileTab
+          currentPhoto={profilePhoto}
+          onSavePhoto={saveProfilePhoto}
+          showNotification={showNotification}
         />
       )}
 
