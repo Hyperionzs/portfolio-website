@@ -71,7 +71,7 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
   const [activeTab, setActiveTab] = useState('display');
   const navigate = useNavigate();
 
-  // Load projects from Firestore on initial render
+  // Load projects and history from Firestore on initial render
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -108,7 +108,26 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
       }
     };
 
+    const fetchHistory = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "history"));
+        const historyData = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            ...data,
+            id: doc.id
+          };
+        });
+        // Sort history by timestamp descending
+        historyData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setProjectHistory(historyData);
+      } catch (error) {
+        console.error("Error loading history from Firestore:", error);
+      }
+    };
+
     fetchProjects();
+    fetchHistory();
     
     // Set up a listener for Firestore changes to keep data in sync
     const unsubscribe = onSnapshot(
@@ -173,9 +192,57 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
         }
       }
     );
+
+    // Set up a listener for Firestore history changes to keep history in sync
+    const unsubscribeHistory = onSnapshot(
+      collection(db, "history"),
+      (snapshot) => {
+        const changes = [];
+        snapshot.docChanges().forEach(change => {
+          const docData = change.doc.data();
+          const docWithId = {
+            ...docData,
+            id: change.doc.id
+          };
+          changes.push({
+            type: change.type,
+            doc: docWithId
+          });
+        });
+
+        if (changes.length > 0) {
+          setProjectHistory(prevHistory => {
+            let newHistory = [...prevHistory];
+            changes.forEach(change => {
+              if (change.type === 'added') {
+                const existingIndex = newHistory.findIndex(h => h.id === change.doc.id);
+                if (existingIndex === -1) {
+                  newHistory.push(change.doc);
+                }
+              } else if (change.type === 'modified') {
+                const index = newHistory.findIndex(h => h.id === change.doc.id);
+                if (index !== -1) {
+                  newHistory[index] = change.doc;
+                }
+              } else if (change.type === 'removed') {
+                newHistory = newHistory.filter(h => h.id !== change.doc.id);
+              }
+            });
+            // Sort by timestamp descending
+            return newHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          });
+        }
+      },
+      (error) => {
+        console.error("Error in history snapshot listener:", error);
+      }
+    );
     
     // Clean up listener on component unmount
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsubscribeHistory();
+    };
   }, []);
 
   // Validate and format project object before submitting to Firebase
@@ -280,11 +347,10 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
       const historyEntry = {
         project: JSON.parse(JSON.stringify(projectWithId)),
         action: 'added',
-        timestamp: localTimestamp,
-        id: `history-${Date.now()}`
+        timestamp: localTimestamp
       };
 
-      setProjectHistory(prev => [...prev, historyEntry]);
+      await addDoc(collection(db, "history"), historyEntry);
       onAddProject?.(projectWithId);
       resetForm();
       showNotification(`Project "${projectWithId.title}" added successfully!`);
@@ -320,11 +386,10 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
       const historyEntry = {
         project: JSON.parse(JSON.stringify(formattedProject)),
         action: 'edited',
-        timestamp: new Date().toISOString(),
-        id: `history-${Date.now()}`
+        timestamp: new Date().toISOString()
       };
 
-      setProjectHistory(prev => [...prev, historyEntry]);
+      await addDoc(collection(db, "history"), historyEntry);
       onAddProject?.(updatedProjects, false, true);
       resetForm();
       setActiveTab('display');

@@ -142,14 +142,24 @@ export function Projects({ addedProjects = [] }) {
   // Open modal with project details
   const openModal = (project) => {
     setSelectedProject(project);
+    document.documentElement.classList.add('modal-open');
     document.body.classList.add('modal-open');
   };
   
   // Close modal
   const closeModal = () => {
+    document.documentElement.classList.remove('modal-open');
     document.body.classList.remove('modal-open');
     setSelectedProject(null);
   };
+
+  // Cleanup: remove modal-open classes on unmount
+  useEffect(() => {
+    return () => {
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+    };
+  }, []);
 
   return (
     <section
@@ -361,38 +371,38 @@ export function Projects({ addedProjects = [] }) {
             exit={{ opacity: 0 }}
             onClick={closeModal}
           >
-            <motion.div 
-              className="bg-white dark:bg-[#181827] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden border border-purple-500/20"
+            <motion.div
+              className="bg-white dark:bg-[#181827] rounded-xl max-w-lg w-full shadow-2xl overflow-hidden border border-purple-500/20 max-h-[90vh] flex flex-col"
               initial={{ scale: 0.95, y: 15, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 15, opacity: 0 }}
               transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
               onClick={e => e.stopPropagation()}
             >
-              <div className="relative w-full aspect-video overflow-hidden bg-gray-900/50">
-                <img 
-                  src={selectedProject.img || '/api/placeholder/400/300'} 
+              <div className="relative w-full aspect-video overflow-hidden bg-gray-900/50 flex-shrink-0">
+                <img
+                  src={selectedProject.img || '/api/placeholder/400/300'}
                   alt={selectedProject.title}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover"
                 />
-                <button 
+                <button
                   onClick={closeModal}
                   className="absolute top-3 right-3 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors"
                 >
                   <IoClose size={20} />
                 </button>
               </div>
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto">
                 <h3 className="text-2xl font-bold text-purple-700 dark:text-purple-400 mb-4">
                   {selectedProject.title}
                 </h3>
-                
+
                 {/* Display Tags in Modal */}
                 {selectedProject.tags && Array.isArray(selectedProject.tags) && selectedProject.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-4">
                     {selectedProject.tags.map((tag, index) => (
-                      <span 
-                        key={index} 
+                      <span
+                        key={index}
                         className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
                       >
                         <FaTag className="mr-1 text-[0.6rem]" />
@@ -401,7 +411,7 @@ export function Projects({ addedProjects = [] }) {
                     ))}
                   </div>
                 )}
-                
+
                 <p className="text-gray-700 dark:text-gray-200 mb-6">
                   {selectedProject.desc}
                 </p>
