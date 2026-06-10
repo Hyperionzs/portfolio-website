@@ -225,3 +225,42 @@ export const parseTagsString = (tagsString) => {
         .filter(Boolean)
     : [];
 };
+
+/**
+ * Export an array of projects as a downloadable JSON file.
+ */
+export const exportProjectsJSON = (projects) => {
+  const blob = new Blob([JSON.stringify(projects, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `portfolio-projects-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+};
+
+/**
+ * Parse a JSON file from an import event and return valid projects.
+ * Returns { validProjects, error } — does not mutate Firestore.
+ */
+export const parseImportFile = (file) =>
+  new Promise((resolve) => {
+    if (!file) return resolve({ validProjects: [], error: null });
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importedData = JSON.parse(event.target.result);
+        if (!Array.isArray(importedData)) throw new Error('Invalid data format');
+        const validProjects = importedData.filter((p) => p.title && p.desc && p.img);
+        if (!validProjects.length) return resolve({ validProjects: [], error: 'No valid projects found.' });
+        resolve({ validProjects, error: null });
+      } catch (error) {
+        resolve({ validProjects: [], error: error.message });
+      }
+    };
+    reader.readAsText(file);
+  });

@@ -121,3 +121,37 @@ export function BulkActionBar({ selectedCount, onFeature, onUnfeature, onDelete,
     </div>
   );
 }
+
+export function ImportModal({ onImport, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-gray-800 rounded-xl max-w-md w-full p-6 border border-green-500/30">
+        <h3 className="text-xl font-bold text-green-400 mb-4">Import Projects</h3>
+        <p className="text-gray-400 mb-4">Upload a JSON file containing project data.</p>
+        <input type="file" accept=".json" onChange={onImport}
+          className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-green-600 file:text-white hover:file:bg-green-700" />
+        <div className="mt-6 flex justify-end">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm">Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function AIModal({ aiPrompt, onPromptChange, onGenerate, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-gray-800 rounded-xl max-w-md w-full p-6 border border-purple-500/30">
+        <h3 className="text-xl font-bold text-purple-400 mb-4">AI Tag Suggestions</h3>
+        <p className="text-gray-400 mb-4">Describe your project and we'll suggest relevant tags.</p>
+        <textarea value={aiPrompt} onChange={(e) => onPromptChange(e.target.value)} rows={3}
+          placeholder="Describe your project..."
+          className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 text-white mb-4" />
+        <div className="flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm">Cancel</button>
+          <button onClick={onGenerate} className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm">Generate</button>
+        </div>
+      </div>
+    </div>
+  );
+}
