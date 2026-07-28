@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaInfoCircle, FaTag } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
-import project1 from '../assets/projects/Portfolio.png';
+import project1 from '../assets/projects/Portfolio.PNG';
 import project2 from '../assets/projects/project2.jpeg';
 import project3 from '../assets/projects/project3.jpeg';
 import { db } from '../config/firebase';
