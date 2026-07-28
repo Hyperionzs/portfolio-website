@@ -46,6 +46,7 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
   const [projectStats, setProjectStats] = useState(null);
   const [visitorStats, setVisitorStats] = useState(null);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ─── Extracted Hooks ──────────────────────────────────────
   const { notification, showNotification } = useNotification();
@@ -57,6 +58,7 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
     projects, setProjects, setProjectHistory, showNotification, onAddProject, resetForm, setActiveTab,
   });
   const { profilePhoto, saveProfilePhoto } = useProfilePhoto();
+  const syncHistory = () => { if (window.confirm('Reset history & sync dengan project display?')) actions.resetAndSyncHistory(); };
 
   // ─── Cleanup ──────────────────────────────────────────────
   useEffect(() => imageUpload.cleanup, [imageUpload.cleanup]);
@@ -119,7 +121,12 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
     setDeleteIndex(null);
   };
 
-  const handleSubmit = (e) => actions.handleSubmit(e, newProject, isEditing, editIndex, imageUpload.newImage);
+  const handleSubmit = (e) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    actions.handleSubmit(e, newProject, isEditing, editIndex, imageUpload.newImage);
+    setTimeout(() => setIsSubmitting(false), 3000);
+  };
 
   const openProjectPreview = (project) => { setPreviewProject(project); setShowPreviewModal(true); };
   const navigateToHome = () => { onLogout?.(); navigate('/#hero'); };
@@ -215,6 +222,13 @@ export function UploadProject({ onAddProject, isAdmin, onLogout }) {
             onExport={exportProjects}
             onAI={() => setShowAIModal(true)}
           />
+          {projectHistory.length > 0 && projectHistory.length !== projects.length && (
+            <button
+              onClick={syncHistory}
+              className="mb-2 text-xs bg-amber-600 hover:bg-amber-700 p-2 rounded"
+            >Sync History ke Display
+            </button>
+          )}
           <ProjectCountDivider shown={filters.filteredProjects.length} total={projects.length} />
 
           <div className={`${filters.viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6' : 'space-y-4'}`}>

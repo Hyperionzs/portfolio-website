@@ -243,6 +243,31 @@ export function useProjectActions({
     [projects, showNotification, setProjects, setProjectHistory],
   );
 
+  // ─── Reset & Sync History ─────────────────────────────────────
+  const resetAndSyncHistory = useCallback(async () => {
+    try {
+      // 1. Hapus semua doc di collection history
+      const historySnap = await getDocs(collection(db, 'history'));
+      const deletePromises = historySnap.docs.map((d) => deleteDoc(doc(db, 'history', d.id)));
+      await Promise.all(deletePromises);
+
+      // 2. Tambah 1 entry per project yang ada
+      const ts = new Date().toISOString();
+      const newHistory = [];
+      for (const project of projects) {
+        const entry = { project: JSON.parse(JSON.stringify(project)), action: 'added', timestamp: ts };
+        const docRef = await addDoc(collection(db, 'history'), entry);
+        newHistory.push({ ...entry, id: docRef.id });
+      }
+      newHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      setProjectHistory(newHistory);
+      showNotification(`History berhasil disync — ${projects.length} project.`, 'success');
+    } catch (error) {
+      console.error('Error syncing history:', error);
+      showNotification('Gagal sync history', 'error');
+    }
+  }, [projects, showNotification, setProjectHistory]);
+
   // ─── Restore from History ────────────────────────────────────
   const restoreFromHistory = useCallback(
     (entry) => {
@@ -308,6 +333,7 @@ export function useProjectActions({
     toggleFeatured,
     duplicateProject,
     restoreFromHistory,
+    resetAndSyncHistory,
     handleSubmit,
   };
 }

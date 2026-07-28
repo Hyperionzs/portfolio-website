@@ -87,7 +87,7 @@ export function Contact() {
               <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Github
               </h3>
-              <p className="text-gray-400">@hyperionzs</p>
+              <p className="text-gray-400">@Hyperionzs</p>
             </div>
           </motion.a>
         </div>
