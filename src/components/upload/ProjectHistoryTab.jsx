@@ -84,7 +84,7 @@ export function ProjectHistoryTab({ projectHistory, onRestore, onClearHistory, o
                       <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {formatDate(entry.timestamp)}
+                      {formatDate(entry.project.createdAt)}
                     </span>
                     <button onClick={() => setExpandedEntry(isExpanded ? null : entry.id)}
                       className="flex items-center gap-1 px-2 py-1 rounded hover:bg-gray-700/30 transition-colors">

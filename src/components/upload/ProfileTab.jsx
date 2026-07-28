@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { processImageFile } from '../../utils/projectHelpers';
+import { compressImage } from '../../utils/projectHelpers';
 
 /**
  * Admin tab for managing the hero section profile photo.
@@ -14,9 +14,11 @@ export function ProfileTab({ currentPhoto, onSavePhoto, showNotification }) {
   const handleFile = useCallback(async (file) => {
     if (!file) return;
     try {
-      const { objectUrl } = await processImageFile(file);
+      // Always compress profile photo — small display size, Firestore has 1 MiB limit
+      const compressed = await compressImage(file, { maxWidth: 400, quality: 0.6 });
+      const objectUrl = URL.createObjectURL(compressed);
       setPreviewUrl(objectUrl);
-      setSelectedFile(file);
+      setSelectedFile(compressed);
     } catch (err) {
       console.error('Error processing image:', err);
       showNotification?.('Error processing image. Please try a different image.', 'error');
