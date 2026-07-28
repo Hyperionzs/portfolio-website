@@ -1,38 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { TypeAnimation } from 'react-type-animation';
 import { motion } from 'framer-motion';
-import * as THREE from 'three';
-import NET from 'vanta/dist/vanta.net.min';
 import project4 from '../assets/projects/project4.jpeg';
 import { useProfilePhoto } from '../hooks/useProfilePhoto';
+import { AuroraBackground } from './AuroraBackground';
+
 
 export function Hero() {
-  const vantaRef = useRef(null);
   const { profilePhoto } = useProfilePhoto();
   const heroImage = profilePhoto || project4;
-
-  useEffect(() => {
-    const effect = NET({
-      el: vantaRef.current,
-      THREE,
-      color: 0x7c3aed,
-      backgroundColor: 0x000000,
-      points: 12.0,
-      maxDistance: 20.0,
-      spacing: 15.0,
-      scale: 1.0,
-      scaleMobile: 1.0,
-      mouseControls: true,
-      touchControls: true,
-      minHeight: 200.0,
-      minWidth: 200.0,
-      showDots: false // Add this to prevent vertex color issues
-    });
-
-    return () => {
-      if (effect) effect.destroy();
-    };
-  }, []);
 
   const textVariant = {
     hidden: { opacity: 0, y: 40 },
@@ -58,31 +34,25 @@ export function Hero() {
   };
 
   return (
-    <section
-      id="hero"
-      ref={vantaRef}
-      className="min-h-screen w-full flex flex-col items-center justify-center text-center relative text-white overflow-hidden"
-      style={{
-        position: 'relative',
-        margin: 0,
-        padding: 0,
-        scrollMarginTop: '100px'
-      }}
-    >
-      {/* Background gradient overlay with subtle animation */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/80 z-[1]"
-        animate={{
-          background: [
-            "linear-gradient(to bottom, rgba(0,0,0,0.3), transparent, rgba(0,0,0,0.8))",
-            "linear-gradient(to bottom, rgba(0,0,0,0.4), transparent, rgba(0,0,0,0.8))",
-            "linear-gradient(to bottom, rgba(0,0,0,0.3), transparent, rgba(0,0,0,0.8))"
-          ]
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
+    <AuroraBackground>
+      <section
+        id="hero"
+        className="min-h-screen w-full flex flex-col items-center justify-center text-center relative text-white overflow-hidden"
+      >
+        {/* Background gradient overlay with subtle animation */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/80 z-[1]"
+          animate={{
+            background: [
+              "linear-gradient(to bottom, rgba(0,0,0,0.3), transparent, rgba(0,0,0,0.8))",
+              "linear-gradient(to bottom, rgba(0,0,0,0.4), transparent, rgba(0,0,0,0.8))",
+              "linear-gradient(to bottom, rgba(0,0,0,0.3), transparent, rgba(0,0,0,0.8))"
+            ]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-      <div className="container mx-auto px-4 py-20 relative z-[2] flex flex-col items-center">
+        <div className="container mx-auto px-4 py-20 relative z-[2] flex flex-col items-center">
         <motion.img
           src={heroImage}
           alt="Foto Profil"
@@ -177,6 +147,7 @@ export function Hero() {
         </div>
       </motion.div>
     </section>
+    </AuroraBackground>
   );
 }
 
