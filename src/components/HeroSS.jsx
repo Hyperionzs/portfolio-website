@@ -86,9 +86,7 @@ export function Hero() {
         >
           <TypeAnimation
             sequence={[
-              'Frontend Developer',
-              2000,
-              'Information Technology Student',
+              'Full Stack Developer',
               2000,
               'Lifelong Learner',
               2000,
